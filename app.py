@@ -8,14 +8,17 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("¡Bienvenido al Dashboard de Last War!")
-st.write("Selecciona una página en la barra lateral izquierda para explorar los datos.")
+st.title("¡Welcome to Last War Dashboard!")
+st.write("Select a page at the sidebar to navigate")
 
 st.markdown("""
-    Este dashboard te permite visualizar diferentes aspectos del juego Last War:
-    - **Dashboard de Alianzas:** Visualiza el historial de puntos de las alianzas.
-    - **Gestión de Datos:** Herramientas para administrar los datos de la base de datos.
-    - **Acerca de:** Información sobre la aplicación.
+    This dashboard allows you to visualize different aspects of the game Last War:
+
+            - Alliance Dashboard: Visualize the alliance points history.
+
+            - Data Management: Tools for managing database data.
+
+            - About: Information about the application.
 """)
 
 # Puedes añadir más contenido a tu página principal aquí si lo deseas

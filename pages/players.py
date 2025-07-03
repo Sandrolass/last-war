@@ -54,23 +54,23 @@ def get_users_data_from_db():
 # --- Interfaz de Streamlit para esta página ---
 
 st.set_page_config(layout="wide") # Ajusta el diseño si aún no está hecho en app.py
-st.title("👥 Listado de Usuarios")
-st.markdown("Filtra y explora la información de los usuarios del juego.")
+st.title("👥 Players list")
+st.markdown("Filter and Expore for Players data")
 st.markdown("---")
 
 # Obtener los datos de los usuarios
 df_users = get_users_data_from_db()
 
 if not df_users.empty:
-    st.subheader("Filtros:")
+    st.subheader("Filters:")
 
     # FILTRO POR SERVER_ID (DESPLEGABLE)
     # Obtener valores únicos de server_id para el desplegable
     all_servers = ['Todos'] + sorted(df_users['server_id'].unique().tolist())
-    selected_server = st.selectbox("Selecciona un Servidor:", all_servers)
+    selected_server = st.selectbox("Select server:", all_servers)
 
     # FILTRO POR USER_NAME (TEXTO LIBRE)
-    search_user_name = st.text_input("Buscar por Nombre de Usuario:", "").strip() # .strip() para eliminar espacios extra
+    search_user_name = st.text_input("Search by Username:", "").strip() # .strip() para eliminar espacios extra
 
     # Aplicar filtros
     filtered_df = df_users.copy() # Trabajar en una copia para no modificar el original
@@ -84,17 +84,17 @@ if not df_users.empty:
             filtered_df['user_name'].astype(str).str.contains(search_user_name, case=False, na=False)
         ]
 
-    st.subheader("Resultados de Usuarios:")
+    st.subheader("Player Results:")
     if not filtered_df.empty:
         st.dataframe(filtered_df)
     else:
-        st.info("No se encontraron usuarios que coincidan con los filtros aplicados.")
+        st.info("No players were found with this filters.")
 
     st.markdown("---")
     st.write("Datos obtenidos de tu base de datos MySQL.")
 
     # Botón para recargar los datos
-    if st.button("Recargar Datos de Usuarios"):
+    if st.button("Recharger Players Data"):
         st.cache_data.clear() # Limpia la caché para forzar una nueva consulta
         st.rerun() # Vuelve a ejecutar la aplicación
 
