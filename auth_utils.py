@@ -33,7 +33,7 @@ def authentication():
 
     # ✅ Aquí está bien el uso de "main"
     try:
-        authenticator.login(location='sidebar')
+        authenticator.login()
 
     except Exception as e:
         st.error(e)
