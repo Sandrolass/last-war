@@ -13,6 +13,17 @@ DB_CONFIG = {
     "database": st.secrets.connections.mysql.database
 }
 
+icon_const = {
+    'A':{
+        'prefix_1':'ATTACKER_',
+        'prefix_2':'OBTAINED_'
+    },
+    'D':{
+        'prefix_1':'DEFENDER_',
+        'prefix_2':'LOST_'
+    }
+} 
+
 @st.cache_data
 def get_battle_data_from_db():
     """
@@ -68,9 +79,13 @@ def get_icons(count, icon_emoji, color,row,type):
     """Genera una cadena de iconos HTML para Streamlit."""
     icons_html = ""
     for t in range(count):
-        colName = type+str(t+1)
+        colName = icon_const[type]['prefix_1']+str(t+1)
+        colVal = icon_const[type]['prefix_2']+str(t+1)
         nm = row[colName]
-        icons_html += f"<span style='font-size: 2em; color: {color}; display: block; margin: 0 auto;'>{icon_emoji} <span>{nm}</span></span>"
+
+        nm2 = 1 * row[colVal] if type == 'A' else -1 * row[colVal]
+
+        icons_html += f"<span style='text-align: center;font-size: 2em; color: {color}; display: block; margin: 0 auto;'>{icon_emoji} <span>{nm} : {nm2}</span></span>"
     return icons_html
 
 # --- Interfaz de Streamlit para esta página ---
@@ -87,12 +102,19 @@ if not df_battles.empty:
     # FILTROS
     all_seasons = ['Todas'] + sorted(df_battles['SEASON_ID'].unique().tolist())
     all_rounds = ['Todas'] + sorted(df_battles['ROUND'].unique().tolist())
+    all_attackers = ['Todos'] + sorted(df_battles['ATTACKER_1'].unique().tolist())
+    all_defenders = ['Todos'] + sorted(df_battles['DEFENDER_1'].unique().tolist())
 
     col_filters = st.columns(2)
     with col_filters[0]:
         selected_season = st.selectbox("Selecciona Temporada:", all_seasons)
     with col_filters[1]:
         selected_round = st.selectbox("Selecciona Ronda:", all_rounds)
+    col_filters_2 = st.columns(2)
+    with col_filters_2[0]:
+        selected_attacker = st.selectbox("Select Attacker:", all_attackers)
+    with col_filters_2[1]:
+        selected_defender = st.selectbox("Select Defender:", all_defenders)    
 
     filtered_df_battles = df_battles.copy()
 
@@ -100,7 +122,10 @@ if not df_battles.empty:
         filtered_df_battles = filtered_df_battles[filtered_df_battles['SEASON_ID'] == selected_season]
     if selected_round != 'Todas':
         filtered_df_battles = filtered_df_battles[filtered_df_battles['ROUND'] == selected_round]
-
+    if selected_attacker != 'Todos':
+        filtered_df_battles = filtered_df_battles[filtered_df_battles['ATTACKER_1'] == selected_attacker]
+    if selected_defender != 'Todos':
+        filtered_df_battles = filtered_df_battles[filtered_df_battles['DEFENDER_1'] == selected_defender]
     st.subheader("Representación Visual de Batallas:")
 
     if not filtered_df_battles.empty:
@@ -110,8 +135,8 @@ if not df_battles.empty:
             num_defenders = sum(1 for col in ['DEFENDER_1', 'DEFENDER_2', 'DEFENDER_3'] if row[col])
 
             # Generar iconos
-            attacker_icons_html = get_icons(num_attackers, "⚔️", "red",row,'ATTACKER_')
-            defender_icons_html = get_icons(num_defenders, "🛡️", "blue",row,'DEFENDER_')
+            attacker_icons_html = get_icons(num_attackers, "⚔️", "red",row,'A')
+            defender_icons_html = get_icons(num_defenders, "🛡️", "blue",row,'D')
 
             # Mostrar información de la batalla
             st.markdown(f"### Batalla ID: {row['BATTLE_ID']} (Temporada: {row['SEASON_ID']}, Ronda: {row['ROUND']})")
@@ -130,7 +155,7 @@ if not df_battles.empty:
 
 
             with col_center:
-                st.markdown("<div style='text-align: center; font-size: 3em; font-weight: bold; color: gray; line-height: 1;'>VS</div>", unsafe_allow_html=True)
+                st.markdown("<div style='text-align: center;margin-top:30px; font-size: 3em; font-weight: bold; color: gray; line-height: 1;'>VS</div>", unsafe_allow_html=True)
 
             with col_right:
                 st.markdown("<div style='text-align: center;'>**Defensores:**</div>", unsafe_allow_html=True)
