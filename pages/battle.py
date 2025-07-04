@@ -10,6 +10,7 @@ authenticator = authentication()
 
 # --- Configuración de la Conexión a la Base de Datos ---
 if st.session_state.get('authentication_status'):
+    authenticator.logout(location='sidebar')
     DB_CONFIG = {
         "host": st.secrets.connections.mysql.host,
         "user": st.secrets.connections.mysql.user,

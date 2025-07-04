@@ -7,6 +7,7 @@ from auth_utils import authentication
 authenticator = authentication()
 
 if st.session_state.get('authentication_status'):
+ authenticator.logout(location='sidebar')
 # --- Configuración de la Conexión a la Base de Datos ---
 # ADVERTENCIA: No pongas credenciales directamente en el código para producción.
 # Usa variables de entorno o st.secrets para mayor seguridad.

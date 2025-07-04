@@ -9,6 +9,7 @@ from auth_utils import authentication
 authenticator = authentication()
 
 if st.session_state.get('authentication_status'):
+    authenticator.logout(location='sidebar')  # Permite al usuario cerrar sesión desde la barra lateral
 # --- Configuración de la Conexión a la Base de Datos ---
 # Asegúrate de que estas credenciales estén en tu .streamlit/secrets.toml
     DB_CONFIG = {
