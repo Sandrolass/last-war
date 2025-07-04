@@ -1,25 +1,24 @@
-# app.py
-
 import streamlit as st
+from auth_utils import authentication
 
-st.set_page_config(
-    page_title="Last War Dashboard Principal",
-    page_icon="📊",
-    layout="wide"
-)
+authenticator = authentication()
 
-st.title("¡Welcome to Last War Dashboard!")
-st.write("Select a page at the sidebar to navigate")
+if st.session_state.get('authentication_status'):
+    authenticator.logout(location='sidebar')
+    
+    st.title("¡Welcome to Last War Dashboard!")
+    st.write("Select a page at the sidebar to navigate")
 
-st.markdown("""
-    This dashboard allows you to visualize different aspects of the game Last War:
+    st.markdown("""
+        This dashboard allows you to visualize different aspects of the game Last War:
 
-            - Alliance Dashboard: Visualize the alliance points history.
+                - Alliance Dashboard: Visualize the alliance points history.
 
-            - Data Management: Tools for managing database data.
+                - Data Management: Tools for managing database data.
 
-            - About: Information about the application.
-""")
-
-# Puedes añadir más contenido a tu página principal aquí si lo deseas
-# st.image("tu_imagen_de_bienvenida.png")
+                - About: Information about the application.
+    """)
+elif st.session_state.get('authentication_status') is False:
+    st.error('Username/password is incorrect')
+elif st.session_state.get('authentication_status') is None:
+    st.warning('Please enter your username and password')
